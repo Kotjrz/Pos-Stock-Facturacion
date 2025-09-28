@@ -1,0 +1,96 @@
+
+Si querés algo web con dashboard limpio → FastAPI + React o directamente Django Admin + Tailwind.
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Ya que mencionaste que pensás tener un dashboard:
+
+Django + Bootstrap/Tailwind → podés tener un admin panel muy pulido rápido.
+
+Flask/FastAPI + React/Vue → frontend moderno con backend Python.
+
+Streamlit → si solo querés mostrar datos y reportes, es súper fácil y se ve lindo sin esfuerzo.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Si querés que tu PoS o Stock Manager se vea como una aplicación de escritorio bonita:
+
+PyQt6 / PySide6 (Qt para Python)
+
+Muy potente, profesional.
+
+Podés crear interfaces con Qt Designer (arrastrar/soltar).
+
+Permite estilos con CSS-like QStylesheets, dándole look moderno.
+
+MOBILE
+
+Kivy
+
+Ideal para apps touch (tablets, pantallas táctiles).
+
+Se ve moderno y funciona en Windows, Linux, Android.
+
+------------------------------------------------------------------------------------------------------------------------------
+
+ROADMAP SUGERIDO
+
+Módulo Stock 
+->
+CRUD de productos.
+->
+Control de stock.
+->
+Módulo Ventas/PoS
+->
+Registrar ventas.
+->
+Guardar totales en DB.
+->
+Integración con AFIP/ARCA
+->
+Primero en homologación con pyafipws.
+->
+Luego en producción.
+->
+Dashboard Web
+->
+Reportes de ventas.
+->
+Estado del stock.
+->
+Comprobantes emitidos.
+
+                ┌───────────────────────────┐
+                │   Interfaz Web (Dashboard) │
+                │  Django / Flask + React    │
+                └─────────────┬─────────────┘
+                              │
+                              ▼
+                ┌───────────────────────────┐
+                │       Backend (API)        │
+                │  Django REST / FastAPI     │
+                └─────────────┬─────────────┘
+                              │
+     ┌────────────────────────┼─────────────────────────┐
+     │                        │                         │
+     ▼                        ▼                         ▼
+┌──────────────┐      ┌──────────────┐          ┌─────────────────┐
+│   Módulo      │      │   Módulo     │          │   Integración   │
+│   Stock       │      │   Ventas/PoS │          │   AFIP/ARCA     │
+└──────────────┘      └──────────────┘          └─────────────────┘
+      │                     │                           │
+      ▼                     ▼                           ▼
+┌──────────────┐      ┌──────────────┐          ┌─────────────────┐
+│   Productos   │      │   Facturas   │          │ WSAA + WSFEv1   │
+│   (DB)        │      │   (DB)       │          │ (pyafipws SOAP) │
+└──────────────┘      └──────────────┘          └─────────────────┘
+                              │
+                              ▼
+                ┌───────────────────────────┐
+                │   Base de Datos (Postgres) │
+                │   Productos, Ventas, CAEs  │
+                └───────────────────────────┘
+
+
+DB PASS : zt1fdjQaTWwdYxnp
