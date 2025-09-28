@@ -5,7 +5,7 @@ from typing import Optional
 
 import psycopg
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPalette
+from PyQt6.QtGui import QColor, QPalette
 from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -33,69 +33,56 @@ class DBConnectionDialog(QDialog):
 
     def _setup_palette(self) -> None:
         palette = self.palette()
-        palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.white)
+        palette.setColor(QPalette.ColorRole.Window, QColor('#f6f8fb'))
+        palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.white)
+        palette.setColor(QPalette.ColorRole.AlternateBase, QColor('#eef2fb'))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor('#1f2937'))
+        palette.setColor(QPalette.ColorRole.Text, QColor('#1f2937'))
+        palette.setColor(QPalette.ColorRole.Button, QColor('#edf1f9'))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor('#1f2937'))
+        palette.setColor(QPalette.ColorRole.PlaceholderText, QColor('#6b7a99'))
         self.setPalette(palette)
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(14)
+        layout.setSpacing(16)
 
-        header = QLabel("Configurá tu conexión a Supabase")
+        header = QLabel("Configura tu conexion a Supabase")
         header.setObjectName("dbDialogTitle")
         header.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        header.setStyleSheet("font-size: 20px; font-weight: 600; color: #223354;")
 
         subtitle = QLabel(
-            "Copiá y pegá la cadena de conexión completa de PostgreSQL. "
-            "La encontrás en el correo que te enviamos. (RECUERDA NO COMPRARTIRLA CON NADIE)"
+            "Copia y pega la cadena de conexion completa de PostgreSQL. "
+            "La encontras en el correo que te enviamos. (RECUERDA NO COMPRARTIRLA CON NADIE)"
         )
+        subtitle.setObjectName("dbDialogSubtitle")
         subtitle.setWordWrap(True)
-        subtitle.setStyleSheet("color: #4e5d78; line-height: 1.4;")
 
         layout.addWidget(header)
         layout.addWidget(subtitle)
 
         card = QFrame()
         card.setObjectName("dbDialogCard")
-        card.setStyleSheet(
-            "#dbDialogCard {"
-            "  background-color: #f8fafc;"
-            "  border: 1px solid #d8e0ef;"
-            "  border-radius: 12px;"
-            "}"
-        )
 
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(20, 20, 20, 20)
-        card_layout.setSpacing(12)
+        card_layout.setContentsMargins(24, 24, 24, 24)
+        card_layout.setSpacing(14)
 
-        field_label = QLabel("Cadena de conexión")
-        field_label.setStyleSheet("font-weight: 500; color: #223354;")
+        field_label = QLabel("Cadena de conexi�n")
+        field_label.setObjectName("dbDialogFieldLabel")
 
         self._conninfo_input.setPlaceholderText(
             "postgresql://usuario:password@host:puerto/base"
         )
-        self._conninfo_input.setMinimumHeight(36)
+        self._conninfo_input.setMinimumHeight(40)
         self._conninfo_input.setClearButtonEnabled(True)
-        self._conninfo_input.setStyleSheet(
-            "QLineEdit {"
-            "  background: #ffffff;"
-            "  border: 1px solid #c3d0ea;"
-            "  border-radius: 8px;"
-            "  padding: 6px 10px;"
-            "  font-size: 14px;"
-            "}"
-            "QLineEdit:focus {"
-            "  border-color: #4f6edb;"
-            "  box-shadow: 0 0 0 2px rgba(79, 110, 219, 0.2);"
-            "}"
-        )
 
         example = QLabel(
             "Ejemplo: postgresql://postgres:secreto@db.supabase.co:5432/postgres"
         )
-        example.setStyleSheet("color: #6b7a99; font-size: 12px;")
+        example.setObjectName("dbDialogHint")
+        example.setWordWrap(True)
 
         card_layout.addWidget(field_label)
         card_layout.addWidget(self._conninfo_input)
@@ -103,31 +90,21 @@ class DBConnectionDialog(QDialog):
 
         layout.addWidget(card)
 
-        self._message_label.setStyleSheet("color: #c0392b; font-size: 13px;")
+        self._message_label.setObjectName("dbDialogMessage")
         self._message_label.setWordWrap(True)
         self._message_label.setVisible(False)
         layout.addWidget(self._message_label)
 
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
-        self._connect_button = QPushButton("Probar conexión")
+        cancel_button = button_box.button(QDialogButtonBox.StandardButton.Cancel)
+        if cancel_button:
+            cancel_button.setCursor(Qt.CursorShape.PointingHandCursor)
+            cancel_button.setObjectName("cancelButton")
+
+        self._connect_button = QPushButton("Probar conexion")
+        self._connect_button.setObjectName("primaryButton")
         self._connect_button.setDefault(True)
         self._connect_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._connect_button.setStyleSheet(
-            "QPushButton {"
-            "  background-color: #4f6edb;"
-            "  color: white;"
-            "  padding: 8px 20px;"
-            "  border: none;"
-            "  border-radius: 8px;"
-            "  font-weight: 600;"
-            "}"
-            "QPushButton:hover {"
-            "  background-color: #3f59b7;"
-            "}"
-            "QPushButton:pressed {"
-            "  background-color: #33478f;"
-            "}"
-        )
 
         self._connect_button.clicked.connect(self._validate_connection)
         button_box.rejected.connect(self.reject)
@@ -139,6 +116,83 @@ class DBConnectionDialog(QDialog):
         layout.addLayout(btn_container)
 
         self._conninfo_input.returnPressed.connect(self._validate_connection)
+
+        self._apply_styles()
+    def _apply_styles(self) -> None:
+        self.setStyleSheet(
+            """
+            QDialog {
+                background-color: #f6f8fb;
+                color: #1f2937;
+            }
+            QLabel {
+                color: #1f2937;
+            }
+            QLabel#dbDialogTitle {
+                font-size: 20px;
+                font-weight: 600;
+                color: #1d2a53;
+            }
+            QLabel#dbDialogSubtitle {
+                color: #4b5d7d;
+                line-height: 1.4;
+            }
+            QLabel#dbDialogFieldLabel {
+                font-weight: 600;
+                color: #1f2937;
+            }
+            QLabel#dbDialogHint {
+                color: #5c6f92;
+                font-size: 12px;
+            }
+            QFrame#dbDialogCard {
+                background-color: #ffffff;
+                border: 1px solid #d8e0ef;
+                border-radius: 16px;
+            }
+            QLineEdit {
+                background: #ffffff;
+                border: 1px solid #c4d0e9;
+                border-radius: 10px;
+                padding: 8px 12px;
+                font-size: 14px;
+                color: #1f2937;
+            }
+            QLineEdit:focus {
+                border-color: #4f6edb;
+            }
+            QLabel#dbDialogMessage {
+                font-size: 13px;
+            }
+            QPushButton {
+                border-radius: 8px;
+                padding: 8px 20px;
+                font-weight: 600;
+            }
+            QPushButton#cancelButton {
+                background-color: #f1f4fa;
+                color: #1f2937;
+                border: 1px solid #d1d9e9;
+            }
+            QPushButton#cancelButton:hover {
+                background-color: #e3e8f5;
+            }
+            QPushButton#cancelButton:pressed {
+                background-color: #d7deef;
+            }
+            QPushButton#primaryButton {
+                background-color: #4f6edb;
+                color: #ffffff;
+                border: none;
+            }
+            QPushButton#primaryButton:hover {
+                background-color: #3f59b7;
+            }
+            QPushButton#primaryButton:pressed {
+                background-color: #324796;
+            }
+            """
+        )
 
     def _set_message(self, message: str, success: bool = False) -> None:
         color = "#27ae60" if success else "#c0392b"
